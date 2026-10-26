@@ -1,12 +1,14 @@
 package com.kartik.blog_platform_api.service;
 
+import com.kartik.blog_platform_api.dto.PostRequestDto;
+import com.kartik.blog_platform_api.dto.PostResponseDto;
 import com.kartik.blog_platform_api.entity.Post;
 import com.kartik.blog_platform_api.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class PostService {
@@ -17,25 +19,60 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public Post createPost(Post post){
-        return postRepository.save(post);
-    }
-    public List<Post> getAllPosts(){
-        return postRepository.findAll();
+
+    public PostResponseDto createPost(PostRequestDto requestDto) {
+        Post post = new Post();
+
+        post.setTitle(requestDto.title());
+        post.setContent(requestDto.content());
+
+        Post savedPost = postRepository.save(post);
+
+        return new PostResponseDto(
+                savedPost.getId(),
+                savedPost.getTitle(),
+                savedPost.getContent()
+        );
     }
 
-    public Optional<Post>getPostById(Long id){
-        return postRepository.findById(id);
+    public List<PostResponseDto> getAllPosts(){
+        return postRepository.findAll()
+                .stream()
+                .map(post -> new PostResponseDto(
+                        post.getId(),
+                        post.getTitle(),
+                        post.getContent()
+                ))
+                .toList();
+
     }
-    public Post updatePost(Long id,Post updatedPost){
-        Post existingPost =postRepository.findById(id)
+
+    public PostResponseDto getPostById(Long id) {
+        Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Post not found"));
 
-        existingPost.setTitle(updatedPost.getTitle());
-        existingPost.setContent(updatedPost.getContent());
+        return new PostResponseDto(
+                post.getId(),
+                post.getTitle(),
+                post.getContent()
+        );
+    }
+    public PostResponseDto updatePost(Long id, PostRequestDto requestDto) {
+        Post existingPost = postRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Post not found"));
 
-        return postRepository.save(existingPost);
+        existingPost.setTitle(requestDto.title());
+        existingPost.setContent(requestDto.content());
+
+        Post updatedPost = postRepository.save(existingPost);
+
+        return new PostResponseDto(
+                updatedPost.getId(),
+                updatedPost.getTitle(),
+                updatedPost.getContent()
+        );
     }
     public void deletePost(Long id) {
        Post existingPost = postRepository.findById(id)

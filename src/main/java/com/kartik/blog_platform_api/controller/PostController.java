@@ -1,12 +1,12 @@
 package com.kartik.blog_platform_api.controller;
 
-import com.kartik.blog_platform_api.entity.Post;
+import com.kartik.blog_platform_api.dto.PostRequestDto;
+import com.kartik.blog_platform_api.dto.PostResponseDto;
 import com.kartik.blog_platform_api.service.PostService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+
 
 import java.util.List;
 
@@ -21,27 +21,27 @@ public class PostController {
     }
 
     @PostMapping
-    public Post createPost(@Valid @RequestBody Post post){
-        return postService.createPost(post);
-    }
+    public PostResponseDto createPost(@Valid @RequestBody
+                                      PostRequestDto requestDto){
+        return postService.createPost(requestDto);
 
+    }
     @GetMapping
-    public List<Post> getAllPosts(){
+    public List<PostResponseDto> getAllPosts(){
         return postService.getAllPosts();
     }
 
     @GetMapping("/{id}")
-    public Post getPostById(@PathVariable Long id){
-        return postService.getPostById(id)
-                .orElseThrow(()->new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Post not found"));
+    public PostResponseDto getPostById(@PathVariable Long id) {
+        return postService.getPostById(id);
     }
 
     @PutMapping("/{id}")
-    public Post updatePost(@PathVariable Long id,@Valid @RequestBody Post post){
-        return postService.updatePost(id, post);
+    public PostResponseDto updatePost(
+            @PathVariable Long id,
+            @Valid @RequestBody PostRequestDto requestDto) {
+        return postService.updatePost(id, requestDto);
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id){
         postService.deletePost(id);
