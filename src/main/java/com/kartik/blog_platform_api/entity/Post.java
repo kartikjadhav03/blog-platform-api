@@ -1,9 +1,6 @@
 package com.kartik.blog_platform_api.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 
@@ -21,6 +18,21 @@ public class Post {
     @NotBlank(message = "Content cannot be blank")
     private String content;
 
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Post(){
 

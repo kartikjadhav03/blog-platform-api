@@ -6,18 +6,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<String> handleResponseStatusException(
+    public ResponseEntity<ApiErrorResponse> handleResponseStatusException(
             ResponseStatusException ex) {
-        return ResponseEntity
 
+        return ResponseEntity
                 .status(ex.getStatusCode())
-                .body(ex.getReason());
+                .body(new ApiErrorResponse(
+                        ex.getStatusCode().value(),
+                        ex.getReason()
+                ));
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleValidationException(
+    public ResponseEntity<ApiErrorResponse> handleValidationException(
             MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult()
                 .getFieldErrors()
@@ -25,7 +29,8 @@ public class GlobalExceptionHandler {
                 .getDefaultMessage();
         return ResponseEntity
                 .badRequest()
-                .body(errorMessage);
+                .body(new ApiErrorResponse(400,errorMessage
+                ));
 
     }
 
