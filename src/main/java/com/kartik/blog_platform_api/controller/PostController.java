@@ -4,8 +4,11 @@ import com.kartik.blog_platform_api.dto.PostRequestDto;
 import com.kartik.blog_platform_api.dto.PostResponseDto;
 import com.kartik.blog_platform_api.service.PostService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 
 import java.util.List;
@@ -26,11 +29,25 @@ public class PostController {
         return postService.createPost(requestDto);
 
     }
-    @GetMapping
-    public List<PostResponseDto> getAllPosts(){
-        return postService.getAllPosts();
-    }
 
+    @GetMapping
+    public Page<PostResponseDto> getAllPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "newest") String sort,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long tagId,
+            @RequestParam(required = false) String title) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        if (title != null || categoryId != null || tagId != null) {
+            return postService.searchAndFilterPosts(
+                    title, categoryId, tagId, pageable, sort);
+        }
+
+        return postService.getAllPosts(pageable, sort);
+    }
     @GetMapping("/search")
     public List<PostResponseDto>searchPostsByTitle(
             @RequestParam String title){

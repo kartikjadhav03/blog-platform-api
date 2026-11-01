@@ -8,9 +8,13 @@ import com.kartik.blog_platform_api.repository.CategoryRepository;
 import com.kartik.blog_platform_api.repository.PostRepository;
 import com.kartik.blog_platform_api.repository.TagRepository;
 import com.kartik.blog_platform_api.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.HashSet;
 import java.util.List;
@@ -70,11 +74,61 @@ public class PostService {
         return mapToPostResponse(savedPost);
     }
 
-    public List<PostResponseDto> getAllPosts() {
-        return postRepository.findAll()
-                .stream()
-                .map(this::mapToPostResponse)
-                .toList();
+    public Page<PostResponseDto> getAllPosts(Pageable pageable, String sort) {
+
+        Sort sorting = sort.equalsIgnoreCase("oldest")
+                ? Sort.by("createdAt").ascending()
+                : Sort.by("createdAt").descending();
+
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sorting
+        );
+
+        return postRepository.findAll(sortedPageable)
+                .map(this::mapToPostResponse);
+    }
+
+    public Page<PostResponseDto> getPostsByCategory(
+            Long categoryId, Pageable pageable, String sort) {
+
+        categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Category not found"));
+
+        Sort sorting = sort.equalsIgnoreCase("oldest")
+                ? Sort.by("createdAt").ascending()
+                : Sort.by("createdAt").descending();
+
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sorting
+        );
+
+        return postRepository.findByCategoryId(categoryId, sortedPageable)
+                .map(this::mapToPostResponse);
+    }
+    public Page<PostResponseDto> getPostsByTag(
+            Long tagId, Pageable pageable, String sort) {
+
+        tagRepository.findById(tagId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Tag not found"));
+
+        Sort sorting = sort.equalsIgnoreCase("oldest")
+                ? Sort.by("createdAt").ascending()
+                : Sort.by("createdAt").descending();
+
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sorting
+        );
+
+        return postRepository.findByTagsId(tagId, sortedPageable)
+                .map(this::mapToPostResponse);
     }
 
     public List<PostResponseDto> searchPostsByTitle(String title) {
@@ -82,6 +136,40 @@ public class PostService {
                 .stream()
                 .map(this::mapToPostResponse)
                 .toList();
+    }
+
+    public Page<PostResponseDto> searchAndFilterPosts(
+            String title,
+            Long categoryId,
+            Long tagId,
+            Pageable pageable,
+            String sort) {
+
+        if (categoryId != null) {
+            categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Category not found"));
+        }
+
+        if (tagId != null) {
+            tagRepository.findById(tagId)
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Tag not found"));
+        }
+
+        Sort sorting = sort.equalsIgnoreCase("oldest")
+                ? Sort.by("createdAt").ascending()
+                : Sort.by("createdAt").descending();
+
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sorting
+        );
+
+        return postRepository.searchAndFilterPosts(
+                        title, categoryId, tagId, sortedPageable)
+                .map(this::mapToPostResponse);
     }
 
     public PostResponseDto getPostById(Long id) {
