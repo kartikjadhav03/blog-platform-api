@@ -9,6 +9,9 @@ public record UserRequestDto(
 
         @NotBlank(message = "Email cannot be blank")
         @Email(message = "Email must be valid")
-        String email
+        String email,
+
+        @NotBlank(message = "Password cannot be blank")
+        String password
 ) {
 }
