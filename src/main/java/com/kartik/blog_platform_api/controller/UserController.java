@@ -1,6 +1,7 @@
 package com.kartik.blog_platform_api.controller;
 
 import com.kartik.blog_platform_api.dto.LoginRequestDto;
+import com.kartik.blog_platform_api.dto.LoginResponseDto;
 import com.kartik.blog_platform_api.dto.UserRequestDto;
 import com.kartik.blog_platform_api.dto.UserResponseDto;
 import com.kartik.blog_platform_api.service.UserService;
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public UserResponseDto login(
+    public LoginResponseDto login(
             @Valid @RequestBody LoginRequestDto requestDto) {
 
         return userService.login(requestDto);

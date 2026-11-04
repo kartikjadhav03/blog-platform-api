@@ -20,6 +20,7 @@ public class GlobalExceptionHandler {
                         ex.getReason()
                 ));
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidationException(
             MethodArgumentNotValidException ex) {
@@ -29,10 +30,32 @@ public class GlobalExceptionHandler {
                 .getDefaultMessage();
         return ResponseEntity
                 .badRequest()
-                .body(new ApiErrorResponse(400,errorMessage
+                .body(new ApiErrorResponse(400, errorMessage
                 ));
 
     }
 
-}
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ApiErrorResponse> handleEmailAlreadyExists(
+            EmailAlreadyExistsException ex) {
 
+        return ResponseEntity
+                .status(409)
+                .body(new ApiErrorResponse(
+                        409,
+                        ex.getMessage()
+                ));
+
+    }
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidCredentials(
+            InvalidCredentialsException ex) {
+
+        return ResponseEntity
+                .status(401)
+                .body(new ApiErrorResponse(
+                        401,
+                        ex.getMessage()
+                ));
+    }
+}

@@ -69,6 +69,7 @@ public class PostService {
             post.setTags(new HashSet<>(tags));
         }
 
+
         Post savedPost = postRepository.save(post);
 
         return mapToPostResponse(savedPost);
