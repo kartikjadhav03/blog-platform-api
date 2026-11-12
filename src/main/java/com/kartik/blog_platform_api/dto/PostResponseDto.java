@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record PostResponseDto(
+
         Long id,
         String title,
         String content,

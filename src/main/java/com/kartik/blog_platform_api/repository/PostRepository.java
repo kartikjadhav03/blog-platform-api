@@ -1,3 +1,4 @@
+
 package com.kartik.blog_platform_api.repository;
 
 import com.kartik.blog_platform_api.entity.Post;
@@ -18,12 +19,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
       Page<Post> findByTagsId(Long tagId, Pageable pageable);
 
       @Query("""
-    SELECT DISTINCT p FROM Post p
-    LEFT JOIN p.tags t
-    WHERE (:title IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :title, '%')))
-      AND (:categoryId IS NULL OR p.category.id = :categoryId)
-      AND (:tagId IS NULL OR t.id = :tagId)
-    """)
+        SELECT DISTINCT p FROM Post p
+        LEFT JOIN p.tags t
+        WHERE (:title IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :title, '%')))
+          AND (:categoryId IS NULL OR p.category.id = :categoryId)
+          AND (:tagId IS NULL OR t.id = :tagId)
+        """)
       Page<Post> searchAndFilterPosts(
               @Param("title") String title,
               @Param("categoryId") Long categoryId,
