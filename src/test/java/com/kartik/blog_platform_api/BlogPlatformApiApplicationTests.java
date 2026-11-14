@@ -19,13 +19,13 @@ class BlogPlatformApiApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
 
-	// Test 1: Application context loads successfully
+
 
 	@Test
 	void contextLoads() {
 	}
 
-	// Test 2: Public GET API works without JWT
+
 	@Test
 	void getAllPosts_shouldReturnOkWithoutAuthentication() throws Exception {
 
@@ -35,8 +35,6 @@ class BlogPlatformApiApplicationTests {
 				.andExpect(jsonPath("$.totalElements").exists());
 	}
 
-	// Test 3: POST API requires authentication
-
 	@Test
 	void createPost_shouldReturnUnauthorizedWithoutToken() throws Exception {
 
@@ -44,7 +42,6 @@ class BlogPlatformApiApplicationTests {
 				.andExpect(status().isUnauthorized());
 	}
 
-	// Test 4: PUT API requires authentication
 
 	@Test
 	void updatePost_shouldReturnUnauthorizedWithoutToken() throws Exception {
@@ -52,8 +49,6 @@ class BlogPlatformApiApplicationTests {
 		mockMvc.perform(put("/api/posts/1"))
 				.andExpect(status().isUnauthorized());
 	}
-
-	// Test 5: DELETE API requires authentication
 
 	@Test
 	void deletePost_shouldReturnUnauthorizedWithoutToken() throws Exception {

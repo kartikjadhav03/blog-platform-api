@@ -58,7 +58,7 @@ class PostServiceTest {
     private PostService postService;
 
 
-    // Helper method: set logged-in user
+
 
     private void setAuthenticatedUser(String email) {
         SecurityContextHolder.getContext().setAuthentication(
@@ -72,7 +72,6 @@ class PostServiceTest {
     }
 
 
-    // TEST 1: Get post when it exists
 
     @Test
     void getPostById_shouldReturnPost_whenPostExists() {
@@ -93,7 +92,6 @@ class PostServiceTest {
     }
 
 
-    // TEST 2: Get post when it does not exist
 
     @Test
     void getPostById_shouldThrowNotFound_whenPostDoesNotExist() {
@@ -110,7 +108,6 @@ class PostServiceTest {
     }
 
 
-    // TEST 3: Search posts when matching posts exist
 
     @Test
     void searchPostsByTitle_shouldReturnMatchingPosts() {
@@ -132,8 +129,6 @@ class PostServiceTest {
     }
 
 
-    // TEST 4: Search posts when no match exists
-
     @Test
     void searchPostsByTitle_shouldReturnEmptyList_whenNoPostMatches() {
 
@@ -146,8 +141,6 @@ class PostServiceTest {
         assertEquals(0, response.size());
     }
 
-
-    // TEST 5: Get all posts with newest sorting
 
     @Test
     void getAllPosts_shouldReturnPostsInDescendingOrder() {
@@ -193,8 +186,6 @@ class PostServiceTest {
         );
     }
 
-
-    // TEST 6: Search and filter with valid category and tag
 
     @Test
     void searchAndFilterPosts_shouldReturnMatchingPosts() {
@@ -247,8 +238,6 @@ class PostServiceTest {
     }
 
 
-    // TEST 7: Search and filter with invalid category
-
     @Test
     void searchAndFilterPosts_shouldThrowNotFound_whenCategoryDoesNotExist() {
 
@@ -272,8 +261,6 @@ class PostServiceTest {
                 .searchAndFilterPosts(any(), any(), any(), any());
     }
 
-
-    // TEST 8: Search and filter with invalid tag
 
     @Test
     void searchAndFilterPosts_shouldThrowNotFound_whenTagDoesNotExist() {
@@ -301,8 +288,6 @@ class PostServiceTest {
                 .searchAndFilterPosts(any(), any(), any(), any());
     }
 
-
-    // TEST 9: Update post successfully as ADMIN
 
     @Test
     void updatePost_shouldUpdatePost_whenAdminUpdates() {
@@ -343,8 +328,6 @@ class PostServiceTest {
     }
 
 
-    // TEST 10: Update post when post does not exist
-
     @Test
     void updatePost_shouldThrowNotFound_whenPostDoesNotExist() {
 
@@ -369,8 +352,6 @@ class PostServiceTest {
         verify(postRepository, never()).save(any(Post.class));
     }
 
-
-    // TEST 11: Another user cannot update the post
 
     @Test
     void updatePost_shouldThrowForbidden_whenAnotherUserUpdatesPost() {
@@ -414,7 +395,6 @@ class PostServiceTest {
     }
 
 
-    // TEST 12: ADMIN can delete a post
 
     @Test
     void deletePost_shouldDeletePost_whenAdminDeletes() {
@@ -438,8 +418,6 @@ class PostServiceTest {
         verify(postRepository).delete(post);
     }
 
-
-    // TEST 13: Delete post when post does not exist
 
     @Test
     void deletePost_shouldThrowNotFound_whenPostDoesNotExist() {
